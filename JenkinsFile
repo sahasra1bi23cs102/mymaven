@@ -1,60 +1,44 @@
 pipeline {
-agent any 
-{
-tools{
+    agent any
 
-maven 'Maven'
+    tools {
+        maven 'Maven'
+    }
 
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main',
+                    url: 'https://github.com/sahasra1bi23cs102/mymaven.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh 'mvn test'
+            }
+        }
+
+        stage('Run Application') {
+            steps {
+                sh 'java -jar target/mymaven-1.0-SNAPSHOT.jar'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Build and deployment successful!'
+        }
+
+        failure {
+            echo 'Build failed!'
+        }
+    }
 }
-}
-stages {
- stage('Checkout')
- { 
-  steps 
-  {
-    git branch: 'main', url: 'https://github.com/sahasra1bi23cs102/mymaven.git'
-  }
- } 
- stage('Build') 
- { 
- steps 
- {
-   sh 'mvn clean package' // Run Maven build
- }
-}
-
-stage('Test') 
-{
- steps
-  {
-  sh 'mvn test' // Run unit tests
-}
-}
-stage('Run Application')
- { 
-  steps
-   {
-
-  sh 'java -jar target/mymaven-1.0-SNAPSHOT.jar'
-
-}
-
-}
-
-}
-
-post {
-
-success {
-  echo 'Build and deployment successful!'
-}
-
-failure 
-{
-echo 'Build failed!'
-}
-
-}
-
-}
-
